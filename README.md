@@ -22,7 +22,7 @@ Kullanılan Teknolojiler
 Kurulum
 
 ```bash
-git clone <bu-reponun-linki>
+git clone https://github.com/azizenesozturk/macera-zamani.git
 cd macera-zamani
 
 python -m venv venv
