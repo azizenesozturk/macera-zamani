@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macera Zamanı</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+    <img id="site-logo" src="{{ url_for('static', filename='logo.png') }}" alt="Logo" onerror="this.style.display='none'" />
+
+    <div id="toolbar">
+        <button id="btn-add-place" class="tool-btn active">📍 Yer Ekle</button>
+        <button id="btn-draw-route" class="tool-btn">🛤️ Rota Çiz</button>
+        <button id="btn-finish-route" class="tool-btn hidden">✅ Rotayı Bitir</button>
+        <button id="btn-my-location" class="tool-btn">🎯 Konumum</button>
+        <button id="btn-toggle-sidebar" class="tool-btn">📋 Listem</button>
+        <span id="coord-display">Koordinat: -</span>
+    </div>
+
+    <div id="sidebar" class="hidden">
+        <div id="sidebar-header">
+            <h3>Kayıtlarım</h3>
+            <button id="sidebar-close">✕</button>
+        </div>
+        <input type="text" id="sidebar-search" placeholder="Ara... (örn: Ankara, Sincan)" />
+        <div id="sidebar-content">
+            <h4>📍 Yerler</h4>
+            <div id="sidebar-places-list"></div>
+            <h4>🛤️ Rotalar</h4>
+            <div id="sidebar-routes-list"></div>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <div id="place-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Yeni Yer Ekle</h3>
+            <input type="text" id="place-name" placeholder="Yer adı" />
+            <textarea id="place-desc" placeholder="Açıklama"></textarea>
+            <select id="place-category">
+                <option value="kamp">⛺ Kamp Alanı</option>
+                <option value="gezi">🌄 Gezi / Manzara Noktası</option>
+                <option value="piknik">🍖 Piknik / Mangal Alanı</option>
+                <option value="diger">📍 Diğer</option>
+            </select>
+            <div class="modal-buttons">
+                <button id="place-save">Kaydet</button>
+                <button id="place-cancel">İptal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rota kaydetme formu (modal) -->
+    <div id="route-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Rotayı Kaydet</h3>
+            <input type="text" id="route-name" placeholder="Rota adı" />
+            <textarea id="route-desc" placeholder="Açıklama"></textarea>
+            <select id="route-category">
+                <option value="yuruyus">🥾 Yürüyüş / Hiking</option>
+                <option value="offroad">🚙 Off-road</option>
+                <option value="bisiklet">🚴 Bisiklet</option>
+                <option value="diger">🗺️ Diğer</option>
+            </select>
+            <div class="modal-buttons">
+                <button id="route-save">Kaydet</button>
+                <button id="route-cancel">Vazgeç</button>
+            </div>
+        </div>
+    </div>
+
+<!-- Şifre kilidi (yer/rota ekleme, silme öncesi) -->
+    <div id="unlock-modal" class="modal hidden">
+        <div class="modal-content">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" id="unlock-logo" onerror="this.style.display='none'" />
+            <h3>Sahip şifrenizi girin</h3>
+            <input type="password" id="unlock-password" placeholder="Şifre" />
+            <div id="unlock-error" style="color:#dc2626; font-size:13px;"></div>
+            <div class="modal-buttons">
+                <button id="unlock-submit">Onayla</button>
+                <button id="unlock-cancel">Vazgeç</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
