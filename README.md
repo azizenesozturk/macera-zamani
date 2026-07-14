@@ -1,6 +1,9 @@
+
 # Macera Zamanı
 
 Doğa keşif platformu — uydu haritası üzerinde kamp, gezi ve piknik alanlarını işaretle, rotalarını çiz, paylaşabilirsin.
+
+🔗 **Canlı demo:** [ozturkazizenes.pythonanywhere.com](https://ozturkazizenes.pythonanywhere.com)
 
 ## Özellikler
 
