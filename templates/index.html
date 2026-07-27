@@ -14,24 +14,50 @@
     <img id="site-logo" src="{{ url_for('static', filename='logo.png') }}" alt="Logo" onerror="this.style.display='none'" />
 
     <div id="toolbar">
-        <button id="btn-add-place" class="tool-btn active">📍 Yer Ekle</button>
-        <button id="btn-draw-route" class="tool-btn">🛤️ Rota Çiz</button>
-        <button id="btn-finish-route" class="tool-btn hidden">✅ Rotayı Bitir</button>
-        <button id="btn-my-location" class="tool-btn">🎯 Konumum</button>
-        <button id="btn-toggle-sidebar" class="tool-btn">📋 Listem</button>
-        <span id="coord-display">Koordinat: -</span>
-    </div>
+    <button id="btn-finish-route" class="tool-btn hidden">Rotayı Bitir</button>
+    <button id="btn-cancel-route" class="tool-btn hidden">İptal</button>
+    <span id="coord-display">Koordinat: -</span>
+</div>
+
+<div id="bottom-tabbar">
+    <button id="btn-browse" class="tab-btn active">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        <span>Gezin</span>
+    </button>
+    <button id="btn-add-place" class="tab-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.97 9.304A8 8 0 0 0 2 10c0 4.69 4.887 9.562 7.022 11.468"/><path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/><circle cx="10" cy="10" r="3"/></svg>
+        <span>Yer Ekle</span>
+    </button>
+    <button id="btn-draw-route" class="tab-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>
+        <span>Rota Çiz</span>
+    </button>
+    <button id="btn-my-location" class="tab-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="5" y1="12" y2="12"/><line x1="19" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="5"/><line x1="12" x2="12" y1="19" y2="22"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>Konumum</span>
+    </button>
+    <button id="btn-toggle-sidebar" class="tab-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+        <span>Listem</span>
+    </button>
+</div>
 
     <div id="sidebar" class="hidden">
         <div id="sidebar-header">
-            <h3>Kayıtlarım</h3>
-            <button id="sidebar-close">✕</button>
-        </div>
-        <input type="text" id="sidebar-search" placeholder="Ara... (örn: Ankara, Sincan)" />
+    <div id="sidebar-brand">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" id="sidebar-logo" onerror="this.style.display='none'" />
+        <span id="sidebar-brand-name">DenDen</span>
+    </div>
+    <button id="sidebar-close">✕</button>
+</div>
+        <div id="search-wrapper">
+    <svg id="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <input type="text" id="sidebar-search" placeholder="Ara... (örn: Ankara, Sincan)" />
+</div>
         <div id="sidebar-content">
-            <h4>📍 Yerler</h4>
+            <h4>Yerler</h4>
             <div id="sidebar-places-list"></div>
-            <h4>🛤️ Rotalar</h4>
+            <h4>Rotalar</h4>
             <div id="sidebar-routes-list"></div>
         </div>
     </div>
@@ -43,12 +69,10 @@
             <h3>Yeni Yer Ekle</h3>
             <input type="text" id="place-name" placeholder="Yer adı" />
             <textarea id="place-desc" placeholder="Açıklama"></textarea>
-            <select id="place-category">
-                <option value="kamp">⛺ Kamp Alanı</option>
-                <option value="gezi">🌄 Gezi / Manzara Noktası</option>
-                <option value="piknik">🍖 Piknik / Mangal Alanı</option>
-                <option value="diger">📍 Diğer</option>
-            </select>
+            <div class="custom-select" id="place-category-select">
+    <button type="button" class="custom-select-trigger"></button>
+    <div class="custom-select-options hidden"></div>
+</div>
             <div class="modal-buttons">
                 <button id="place-save">Kaydet</button>
                 <button id="place-cancel">İptal</button>
@@ -62,12 +86,10 @@
             <h3>Rotayı Kaydet</h3>
             <input type="text" id="route-name" placeholder="Rota adı" />
             <textarea id="route-desc" placeholder="Açıklama"></textarea>
-            <select id="route-category">
-                <option value="yuruyus">🥾 Yürüyüş / Hiking</option>
-                <option value="offroad">🚙 Off-road</option>
-                <option value="bisiklet">🚴 Bisiklet</option>
-                <option value="diger">🗺️ Diğer</option>
-            </select>
+            <div class="custom-select" id="route-category-select">
+    <button type="button" class="custom-select-trigger"></button>
+    <div class="custom-select-options hidden"></div>
+</div>
             <div class="modal-buttons">
                 <button id="route-save">Kaydet</button>
                 <button id="route-cancel">Vazgeç</button>
@@ -79,6 +101,7 @@
     <div id="unlock-modal" class="modal hidden">
         <div class="modal-content">
             <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" id="unlock-logo" onerror="this.style.display='none'" />
+            <div id="unlock-brand">DenDen</div>
             <h3>Sahip şifrenizi girin</h3>
             <input type="password" id="unlock-password" placeholder="Şifre" />
             <div id="unlock-error" style="color:#dc2626; font-size:13px;"></div>

@@ -61,45 +61,46 @@ const labelsLayer = L.tileLayer(
 labelsLayer.addTo(map);
 
 
-// ---------- 1.5) KATEGORİ İKONLARI ----------
 
-const categoryEmojis = {
-    kamp: '⛺',
-    gezi: '🌄',
-    piknik: '🍖',
-    diger: '📍'
-};
+// ---------- ORTAK KATEGORİLER (hem Yer hem Rota için) ----------
+const CATEGORIES = [
+    {
+        key: 'kamp',
+        label: 'Kamp Alanı',
+        icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="4" r="2"/><path d="m14 5 3-3 3 3"/><path d="m14 10 3-3 3 3"/><path d="M17 14V2"/><path d="M17 14H7l-5 8h20Z"/><path d="M8 14v8"/><path d="m9 14 5 8"/></svg>'
+    },
+    {
+        key: 'yuruyus',
+        label: 'Doğa Yürüyüşü',
+        icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7C16.1046 7 17 6.10457 17 5C17 3.89543 16.1046 3 15 3C13.8954 3 13 3.89543 13 5C13 6.10457 13.8954 7 15 7Z"/><path d="M12.6133 8.26691L9.30505 12.4021L13.4403 16.5374L11.3727 21.0861"/><path d="M6.4104 9.5075L9.79728 6.19931L12.6132 8.26692L15.508 11.5752H19.2297"/><path d="M8.89152 15.7103L7.65095 16.5374H4.34277"/></svg>'
+    },
+    {
+        key: 'piknik',
+        label: 'Mangal / Piknik Yeri',
+        icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.4 13.7A6.5 6.5 0 1 0 6.28 6.6c-1.1 3.13-.78 3.9-3.18 6.08A3 3 0 0 0 5 18c4 0 8.4-1.8 11.4-4.3"/><path d="m18.5 6 2.19 4.5a6.48 6.48 0 0 1-2.29 7.2C15.4 20.2 11 22 7 22a3 3 0 0 1-2.68-1.66L2.4 16.5"/><circle cx="12.5" cy="8.5" r="2.5"/></svg>'
+    },
+    {
+        key: 'gitmek',
+        label: 'Gitmeyi Düşündüğüm Yer',
+        icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>'
+    },
+    {
+        key: 'diger',
+        label: 'Diğer',
+        icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>'
+    },
+];
 
-const categoryLabels = {
-    kamp: 'Kamp Alanı',
-    gezi: 'Gezi / Manzara Noktası',
-    piknik: 'Piknik / Mangal Alanı',
-    diger: 'Diğer'
-};
-
-const routeCategoryEmojis = {
-    yuruyus: '🥾',
-    offroad: '🚙',
-    bisiklet: '🚴',
-    diger: '🗺️'
-};
-
-const routeCategoryLabels = {
-    yuruyus: 'Yürüyüş / Hiking',
-    offroad: 'Off-road',
-    bisiklet: 'Bisiklet',
-    diger: 'Diğer'
-};
-
-function makeRouteCategoryIcon(category) {
-    const emoji = routeCategoryEmojis[category] || routeCategoryEmojis.diger;
-    return L.divIcon({
-        html: `<div class="category-icon">${emoji}</div>`,
-        className: '',
-        iconSize: [30, 30],
-        iconAnchor: [15, 15]
-    });
+function getCategory(key) {
+    return CATEGORIES.find(c => c.key === key) || CATEGORIES[CATEGORIES.length - 1];
 }
+
+
+
+
+
+
+
 
 // İki koordinat arası mesafeyi km cinsinden hesaplar (Haversine formülü)
 function haversineDistance([lat1, lng1], [lat2, lng2]) {
@@ -124,20 +125,20 @@ function calculateRouteDistanceKm(points) {
 // Rota ikonlarını (haritayı uzaklaştırınca bile görünür kalsınlar diye) ayrı bir katmanda tutuyoruz
 const routeIconLayer = L.layerGroup().addTo(map);
 
-function makeCategoryIcon(category) {
-    const emoji = categoryEmojis[category] || categoryEmojis.diger;
+function makeCategoryIcon(categoryKey) {
+    const cat = getCategory(categoryKey);
     return L.divIcon({
-        html: `<div class="category-icon">${emoji}</div>`,
+        html: `<div class="category-icon">${cat.icon}</div>`,
         className: '',
-        iconSize: [30, 30],
-        iconAnchor: [15, 15]
+        iconSize: [28, 28],
+        iconAnchor: [14, 14]
     });
 }
 
 
 // ---------- 2) DURUM (STATE) DEĞİŞKENLERİ ----------
 
-let mode = 'place';
+let mode = 'browse';
 let pendingLatLng = null;
 let routePoints = [];
 let routeLine = null;
@@ -150,12 +151,15 @@ const routeLinesById = {};
 
 // ---------- 3) MOD BUTONLARI ----------
 
+const btnBrowse = document.getElementById('btn-browse');
 const btnAddPlace = document.getElementById('btn-add-place');
 const btnDrawRoute = document.getElementById('btn-draw-route');
 const btnFinishRoute = document.getElementById('btn-finish-route');
+const btnCancelRoute = document.getElementById('btn-cancel-route');
 const btnMyLocation = document.getElementById('btn-my-location');
 const coordDisplay = document.getElementById('coord-display');
 
+btnBrowse.addEventListener('click', () => setMode('browse'));
 btnAddPlace.addEventListener('click', () => setMode('place'));
 btnDrawRoute.addEventListener('click', () => setMode('route'));
 
@@ -164,14 +168,17 @@ function setMode(newMode) {
         cancelRouteDrawing();
     }
     mode = newMode;
+    btnBrowse.classList.toggle('active', mode === 'browse');
     btnAddPlace.classList.toggle('active', mode === 'place');
     btnDrawRoute.classList.toggle('active', mode === 'route');
     updateFinishButtonVisibility();
 }
 
 function updateFinishButtonVisibility() {
-    const shouldShow = mode === 'route' && routePoints.length >= 2;
-    btnFinishRoute.classList.toggle('hidden', !shouldShow);
+    const canFinish = mode === 'route' && routePoints.length >= 2;
+    const hasPoints = mode === 'route' && routePoints.length >= 1;
+    btnFinishRoute.classList.toggle('hidden', !canFinish);
+    btnCancelRoute.classList.toggle('hidden', !hasPoints);
 }
 
 btnFinishRoute.addEventListener('click', () => {
@@ -180,10 +187,13 @@ btnFinishRoute.addEventListener('click', () => {
     }
 });
 
-
-// ---------- 4) HARİTAYA TIKLAMA OLAYI ----------
+btnCancelRoute.addEventListener('click', () => {
+    cancelRouteDrawing();
+});
 
 map.on('click', (e) => {
+    if (mode === 'browse') return; // Gezin modunda tıklama hiçbir şey yapmaz
+
     const { lat, lng } = e.latlng;
     coordDisplay.textContent = `Koordinat: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 
@@ -206,7 +216,7 @@ const placeCategoryInput = document.getElementById('place-category');
 function openPlaceModal() {
     placeNameInput.value = '';
     placeDescInput.value = '';
-    placeCategoryInput.value = 'kamp';
+    
     placeModal.classList.remove('hidden');
     placeNameInput.focus();
 }
@@ -221,7 +231,7 @@ document.getElementById('place-cancel').addEventListener('click', closePlaceModa
 document.getElementById('place-save').addEventListener('click', async () => {
     const name = placeNameInput.value.trim();
     const description = placeDescInput.value.trim();
-    const category = placeCategoryInput.value;
+    const category = getCustomSelectValue('place-category-select');
 
     if (!name || !pendingLatLng) return;
     const unlocked = await ensureUnlocked();
@@ -252,7 +262,7 @@ function addPlaceMarkerToMap(place) {
         icon: makeCategoryIcon(place.category)
     }).addTo(map);
 
-    const categoryLabel = categoryLabels[place.category] || categoryLabels.diger;
+    const categoryLabel = getCategory(place.category).label;
 
     marker.bindPopup(`
         <b>${escapeHtml(place.name)}</b><br>
@@ -294,10 +304,6 @@ function addRoutePoint(lat, lng) {
     }
 
     updateFinishButtonVisibility();
-
-    if (routePoints.length >= 2) {
-        coordDisplay.textContent = `Rota: ${routePoints.length} nokta seçildi — bitirmek için "Rotayı Bitir" butonuna bas`;
-    }
 }
 
 function cancelRouteDrawing() {
@@ -337,7 +343,7 @@ document.getElementById('route-cancel').addEventListener('click', () => {
 document.getElementById('route-save').addEventListener('click', async () => {
     const name = routeNameInput.value.trim();
     const description = routeDescInput.value.trim();
-    const category = document.getElementById('route-category').value;
+    const category = getCustomSelectValue('route-category-select');
 
     if (!name || routePoints.length < 2) return;
     const unlocked = await ensureUnlocked();
@@ -419,7 +425,7 @@ async function loadRoutes() {
     const routes = await response.json();
     routes.forEach((route) => {
         const distanceKm = calculateRouteDistanceKm(route.points);
-        const categoryLabel = routeCategoryLabels[route.category] || routeCategoryLabels.diger;
+        const categoryLabel = getCategory(route.category).label;
 
         const popupHtml = `
             <b>${escapeHtml(route.name)}</b><br>
@@ -481,11 +487,11 @@ function renderSidebar() {
 
     sidebarPlacesList.innerHTML = '';
     filteredPlaces.forEach((place) => {
-        const emoji = categoryEmojis[place.category] || categoryEmojis.diger;
+        const icon = getCategory(place.category).icon;
         const div = document.createElement('div');
         div.className = 'sidebar-item';
         div.innerHTML = `
-            <div class="item-title">${emoji} ${escapeHtml(place.name)}</div>
+            <div class="item-title"><span class="sidebar-item-icon">${icon}</span>${escapeHtml(place.name)}</div>
             <div class="item-meta">${place.lat.toFixed(4)}, ${place.lng.toFixed(4)}</div>
         `;
         div.addEventListener('click', () => {
@@ -508,12 +514,12 @@ function renderSidebar() {
 
     sidebarRoutesList.innerHTML = '';
     filteredRoutes.forEach((route) => {
-        const emoji = routeCategoryEmojis[route.category] || routeCategoryEmojis.diger;
+        const icon = getCategory(route.category).icon;
         const distanceKm = calculateRouteDistanceKm(route.points);
         const div = document.createElement('div');
         div.className = 'sidebar-item';
         div.innerHTML = `
-            <div class="item-title">${emoji} ${escapeHtml(route.name)}</div>
+            <div class="item-title"><span class="sidebar-item-icon">${icon}</span>${escapeHtml(route.name)}</div>
             <div class="item-meta">${distanceKm.toFixed(2)} km</div>
         `;
         div.addEventListener('click', () => {
@@ -533,3 +539,66 @@ function renderSidebar() {
 
 loadPlaces();
 loadRoutes();
+
+function syncToolbarOffset() {
+    const tabbar = document.getElementById('bottom-tabbar');
+    if (tabbar) {
+        document.documentElement.style.setProperty('--tabbar-height', tabbar.offsetHeight + 'px');
+    }
+}
+window.addEventListener('load', syncToolbarOffset);
+window.addEventListener('resize', syncToolbarOffset);
+
+// ---------- ÖZEL AÇILIR MENÜ (SVG ikonlu) ----------
+function buildCustomSelect(containerId, defaultKey) {
+    const container = document.getElementById(containerId);
+    container.dataset.value = defaultKey;
+
+    const trigger = container.querySelector('.custom-select-trigger');
+    const optionsBox = container.querySelector('.custom-select-options');
+
+    function renderTrigger() {
+        const cat = getCategory(container.dataset.value);
+        trigger.innerHTML = `
+            <span class="custom-select-icon">${cat.icon}</span>
+            <span class="custom-select-label">${cat.label}</span>
+            <svg class="custom-select-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        `;
+    }
+
+    function renderOptions() {
+        optionsBox.innerHTML = CATEGORIES.map(cat => `
+            <div class="custom-select-option" data-key="${cat.key}">
+                <span class="custom-select-icon">${cat.icon}</span>
+                <span>${cat.label}</span>
+            </div>
+        `).join('');
+        optionsBox.querySelectorAll('.custom-select-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                container.dataset.value = opt.dataset.key;
+                renderTrigger();
+                optionsBox.classList.add('hidden');
+            });
+        });
+    }
+
+    trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.custom-select-options').forEach(box => {
+            if (box !== optionsBox) box.classList.add('hidden');
+        });
+        optionsBox.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', () => optionsBox.classList.add('hidden'));
+
+    renderTrigger();
+    renderOptions();
+}
+
+function getCustomSelectValue(containerId) {
+    return document.getElementById(containerId).dataset.value;
+}
+
+buildCustomSelect('place-category-select', 'kamp');
+buildCustomSelect('route-category-select', 'yuruyus');

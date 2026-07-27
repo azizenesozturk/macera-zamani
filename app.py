@@ -6,7 +6,7 @@ from database import get_connection, init_db
 app = Flask(__name__)
 app.secret_key = "bu-anahtari-degistir-kimse-bilmesin-12345"
 
-EDIT_PASSWORD = "boklu"  # Ekleme/silme icin gereken sifre - istersen degistir
+EDIT_PASSWORD = "zalimbok"  # Ekleme/silme icin gereken sifre - istersen degistir
 
 
 def edit_required(f):
