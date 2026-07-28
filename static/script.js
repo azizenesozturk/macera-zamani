@@ -442,7 +442,7 @@ async function loadRoutes() {
 
         // Rotanın ortasına, uzaklaştırınca bile görünen bir ikon koy
         const midPoint = route.points[Math.floor(route.points.length / 2)];
-        const icon = L.marker(midPoint, { icon: makeRouteCategoryIcon(route.category) });
+        const icon = L.marker(midPoint, { icon: makeCategoryIcon(route.category) });
         icon.bindPopup(popupHtml);
         routeIconLayer.addLayer(icon);
         routeLinesById[route.id] = { line, points: route.points };
