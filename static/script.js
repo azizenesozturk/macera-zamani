@@ -340,7 +340,11 @@ document.getElementById('route-cancel').addEventListener('click', () => {
     cancelRouteDrawing();
 });
 
+let isSavingRoute = false;
+
 document.getElementById('route-save').addEventListener('click', async () => {
+    if (isSavingRoute) return;
+
     const name = routeNameInput.value.trim();
     const description = routeDescInput.value.trim();
     const category = getCustomSelectValue('route-category-select');
@@ -349,11 +353,16 @@ document.getElementById('route-save').addEventListener('click', async () => {
     const unlocked = await ensureUnlocked();
     if (!unlocked) return;
 
-    await fetch('/api/routes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, description, category, points: routePoints })
-    });
+    isSavingRoute = true;
+    try {
+        await fetch('/api/routes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, description, category, points: routePoints })
+        });
+    } finally {
+        isSavingRoute = false;
+    }
 
     closeRouteModal();
 
